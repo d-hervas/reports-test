@@ -1,4 +1,5 @@
 module.exports = REPORT_STATES = {
   CLOSED: 'CLOSED',
-  BLOCKED: 'BLOCKED'
+  BLOCKED: 'BLOCKED',
+  OPEN: 'OPEN',
 }

@@ -11,7 +11,9 @@ const express = require('express')
 
 const app = express();
 
-const reports = require('./data/reports.json');
+// Will keep reports in memory
+const reports = require('./data/reports.json').elements;
+
 const REPORT_STATES = require('./utils');
 
 app.set('port', process.env.PORT || 3000);
@@ -25,25 +27,36 @@ if (app.get('env') == 'development') {
 }
 
 app.get('/reports', (req, res) => {
-  res.send(reports)
+  const {state} = req.query
+  if (Object.keys(REPORT_STATES).includes(state)) {
+    res.send(reports.filter(x => x.state === state))
+  } else {
+    res.send(reports)
+  }
 });
 
 app.put('/reports/:reportId', (req, res) => {
   const {reportId} = req.params
   const { body } = req
-  console.log(body)
+  const reportIndex = reports.findIndex(x => x.id === reportId)
+  if (reportIndex === -1) {
+    return res.sendStatus(404)
+  }
   switch (body.ticketState) {
     case REPORT_STATES.CLOSED: 
-      console.log("CLOSING!")
-      res.sendStatus(200)
-      return
+      reports[reportIndex] = {
+        ...reports[reportIndex],
+        state: 'CLOSED'
+      }
+      return res.sendStatus(200)
     case REPORT_STATES.BLOCKED:
-      console.log("BLOCKING!")
-      res.sendStatus(200)
-      return
+      reports[reportIndex] = {
+        ...reports[reportIndex],
+        state: 'RESOLVED'
+      }
+      return res.sendStatus(200)
     default:
-      res.sendStatus(400)
-      return
+      return res.sendStatus(400)
   }
 });
 

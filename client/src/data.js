@@ -1,4 +1,4 @@
-export const getReports = () => fetch('/reports').then(x => x.json()).then(x => x.elements)
+export const getReports = () => fetch(`/reports?state=OPEN`).then(x => x.json())
 
 export const blockReport = (id) => fetch(`/reports/${id}`, {
   method: 'PUT',
@@ -8,7 +8,7 @@ export const blockReport = (id) => fetch(`/reports/${id}`, {
   body: JSON.stringify({
     ticketState: "BLOCKED"
   })
-}).then(x => x.json())
+})
 
 export const resolveReport = (id) => fetch(`/reports/${id}`, {
   method: 'PUT',
@@ -18,4 +18,4 @@ export const resolveReport = (id) => fetch(`/reports/${id}`, {
   body: JSON.stringify({
     ticketState: "CLOSED"
   })
-}).then(x => x.json())
+})

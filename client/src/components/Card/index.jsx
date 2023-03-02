@@ -40,7 +40,7 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export function StatsRingCard({ id, type, state, message, onBlock, onResolve }) {
-  const { classes, theme } = useStyles();
+  const { classes } = useStyles();
 
   return (
     <Card withBorder p="xl" radius="md" className={classes.card}>

@@ -14,10 +14,14 @@ const useStyles = createStyles((theme) => ({
 
 export const CardList = () => {
   const [reports, setReports] = useState([]);
+  const [reportsChanged, setReportsChanged] = useState(true)
 
   useEffect(() => {
-    getReports().then(setReports)
-  }, [])
+    if (reportsChanged) {
+      getReports().then(setReports)
+      setReportsChanged(false)
+    }
+  }, [reportsChanged])
 
   const { classes } = useStyles();
 
@@ -25,12 +29,17 @@ export const CardList = () => {
     <div className={classes.container}>
       {reports.map(x =>
         <StatsRingCard
+          key={x.id}
           id={x.id}
           type={x.payload.reportType}
           state={x.state}
           message={x.payload.message}
           onBlock={(id) => blockReport(id)}
-          onResolve={(id) => resolveReport(id)}
+          onResolve={(id) => resolveReport(id).then((res) => {
+            if (res.ok) {
+              setReportsChanged(true)
+            }
+          })}
         />
       )}
     </div>
